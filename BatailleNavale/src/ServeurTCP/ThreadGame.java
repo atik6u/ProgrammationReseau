@@ -29,7 +29,7 @@ public class ThreadGame extends Thread {
 			String choice;
 			int x;
 			int y;
-			int o;
+			char o;
 			String[] strCoord;
 			ArrayList<Integer> ships = this.game.getShips();
 			int i = 0;
@@ -42,16 +42,17 @@ public class ThreadGame extends Thread {
 					if (strCoord.length != 3) {
 						throw new IllegalArgumentException();
 					}
-					x = Integer.parseInt(strCoord[0]);
+					x = strCoord[0].charAt(0);
 					y = Integer.parseInt(strCoord[1]);
-					o = Integer.parseInt(strCoord[2]);
-					if (!game.remplir(ships.get(i), x, y, o, 2)) {
-						throw new IllegalArgumentException();
+					o = strCoord[2].charAt(0);
+					if (!game.remplir(ships.get(i), (int)(x - 'a'), y, o, this.playerNum)) {
+						throw new IllegalArgumentException();	
 					}
+					afficher();
 					System.out.println("J" + this.playerNum + ": Position de navire " + ships.get(i) + " cases: x = "+ x + ", y = "+ y + ", o = "+ o);
 					i++;
 				} catch (Exception e) {
-					this.out.println("Mauvais format de la position du navire.\nVoulez-vous réentrer la position au format suivant: x,y,o");
+					this.out.println("Format mauvais de la position du navire.\nVoulez-vous réentrer la position au format suivant: x,y,o");
 				}
 			}
 			
@@ -59,6 +60,31 @@ public class ThreadGame extends Thread {
 			System.out.println("Problème enterPosition");
 		}
 		
+	}
+
+	public void afficher () {
+		int [][] grid;
+		if(this.playerNum == 1) {
+			grid = this.game.getGrid1();
+		} else {
+			grid = this.game.getGrid2();
+		}
+		out.print("    ");
+		for (int i = 0; i < this.game.getWidth(); i++) {
+			out.print((char)('a' + i) + " ");
+		}
+		out.print("\n  _|");
+		for (int i = 0; i < this.game.getWidth(); i++) {
+			out.print("_|");
+		}
+		out.print("\n");
+		for (int j = 0; j < this.game.getLength(); j++) {
+			out.print(j + " _|");
+			for (int i = 0; i < this.game.getWidth(); i++) {
+				out.print(grid[i][j] + " ");
+			}
+			out.print("\n");
+		}
 	}
 	
 	public void run() {

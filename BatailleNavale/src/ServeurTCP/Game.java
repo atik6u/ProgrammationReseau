@@ -23,9 +23,13 @@ public class Game {
 		this.ships = ships;
 	}
 	
-	private boolean verifier(int shipLength, int x, int y, int o, int numGrid) {
+	private boolean verifier(int shipLength, int x, int y, char o, int gridNum) {
+		if((o != 'h') && (o != 'v')) {
+			return false;
+		}
+		
 		int [][] grid;
-		if(numGrid == 1) {
+		if(gridNum == 1) {
 			grid = this.grid1;
 		} else {
 			grid = this.grid2;
@@ -33,31 +37,39 @@ public class Game {
 		
 		
 		for (int i = 0; i < shipLength; i++) {
-			
+			if((x < 0) || (x >= width) || (y < 0) || (y >= length))
+				return false;
+			if(grid[x][y] != 0)
+				return false;
+			if (o == 'h')
+				x += 1;
+			else
+				y += 1;
 		}
-		if((x>=width) && (y>=length))
-			return false;
-		if(grid[x][y] != 0)
-			return false;
-		if (o == 0)
-			x += 1;
-		else
-			y += 1;
+		
 		return true;
 	}
 	
-	public boolean remplir(int shipLength, int x, int y, int o, int numGrid) {
-//		int [][] grid;
-//		if(numGrid == 1) {
-//			grid = this.grid1;
-//		} else {
-//			grid = this.grid2;
-//		}
-//		if(!verifier(shipLength, x, y, o, numGrid)) {
-//			return false;
-//		}
+	public boolean remplir(int shipLength, int x, int y, char o, int gridNum) {
+		int [][] grid;
+		if(gridNum == 1) {
+			grid = this.grid1;
+		} else {
+			grid = this.grid2;
+		}
+		if(!verifier(shipLength, x, y, o, gridNum)) {
+			return false;
+		}
 		
 		//remplissage		
+
+		for (int i = 0; i < shipLength; i++) {
+			if(o == 'h') {
+				grid[x + i][y] = 1;
+			} else {
+				grid[x][y + i] = 1;
+			}
+		}
 		
 		return true;
 	}
