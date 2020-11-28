@@ -23,6 +23,47 @@ public class Game {
 		this.ships = ships;
 	}
 	
+	private boolean verifierAutour(int x, int y, int gridNum) {
+		int [][] grid;
+		
+		if(gridNum == 1) {
+			grid = this.grid1;
+		} else {
+			grid = this.grid2;
+		}
+		
+		if((x-1) >= 0) {
+			if((y-1) >= 0)
+				if(grid[x-1][y-1] != 0)
+					return false;
+			if(grid[x-1][y] != 0)
+				return false;
+			if((y+1) < length)
+				if(grid[x-1][y+1] != 0)
+					return false;
+		}
+		
+		if((y-1) >= 0)
+			if(grid[x][y-1] != 0)
+				return false;
+		if((y+1) < length)
+			if(grid[x][y+1] != 0)
+				return false;
+		
+		if((x+1) < width) {
+			if((y-1) >= 0)
+				if(grid[x+1][y-1] != 0)
+					return false;
+			if(grid[x+1][y] != 0)
+				return false;
+			if((y+1) < length)
+				if(grid[x+1][y+1] != 0)
+					return false;
+		}
+		
+		return true;
+	}
+	
 	private boolean verifier(int shipLength, int x, int y, char o, int gridNum) {
 		if((o != 'h') && (o != 'v')) {
 			return false;
@@ -40,6 +81,8 @@ public class Game {
 			if((x < 0) || (x >= width) || (y < 0) || (y >= length))
 				return false;
 			if(grid[x][y] != 0)
+				return false;
+			if(!verifierAutour(x, y, gridNum))
 				return false;
 			if (o == 'h')
 				x += 1;

@@ -45,14 +45,14 @@ public class ThreadGame extends Thread {
 					x = strCoord[0].charAt(0);
 					y = Integer.parseInt(strCoord[1]);
 					o = strCoord[2].charAt(0);
-					if (!game.remplir(ships.get(i), (int)(x - 'a'), y, o, this.playerNum)) {
+					if (!game.remplir(ships.get(i), (int)(x - 'a'), y - 1, o, this.playerNum)) {
 						throw new IllegalArgumentException();	
 					}
 					afficher();
 					System.out.println("J" + this.playerNum + ": Position de navire " + ships.get(i) + " cases: x = "+ x + ", y = "+ y + ", o = "+ o);
 					i++;
 				} catch (Exception e) {
-					this.out.println("Format mauvais de la position du navire.\nVoulez-vous réentrer la position au format suivant: x,y,o");
+					this.out.println("Mauvaise Position ou mauvais format de la position du navire.\nVoulez-vous réentrer la position au format suivant: x,y,o (ex: a,0,v)");
 				}
 			}
 			
@@ -69,17 +69,20 @@ public class ThreadGame extends Thread {
 		} else {
 			grid = this.game.getGrid2();
 		}
-		out.print("    ");
+		out.print("     ");
 		for (int i = 0; i < this.game.getWidth(); i++) {
 			out.print((char)('a' + i) + " ");
 		}
-		out.print("\n  _|");
+		out.print("\n  __|");
 		for (int i = 0; i < this.game.getWidth(); i++) {
 			out.print("_|");
 		}
 		out.print("\n");
 		for (int j = 0; j < this.game.getLength(); j++) {
-			out.print(j + " _|");
+			if (j > 8)
+				out.print((j+1) + " _|");
+			else
+				out.print((j+1) + " __|");
 			for (int i = 0; i < this.game.getWidth(); i++) {
 				out.print(grid[i][j] + " ");
 			}
