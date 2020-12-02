@@ -8,22 +8,25 @@ public class Game {
 	private int [][] grid1;
 	private int [][] grid2;
 	private ArrayList<Integer> ships = new ArrayList<Integer>();
+	private int turn;
 	
 	public Game(int width, int length, ArrayList<Integer> ships) {
 		super();
 		this.width = width;
 		this.length = length;
-		this.grid1 = this.grid2 = new int [width][length];
-		for (int i = 0; i < grid1.length; i++) {
-			for (int j = 0; j < grid1[i].length; j++) {
+		this.grid1 = new int [width][length];
+		this.grid2 = new int [width][length];
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < length; j++) {
 				grid1[i][j] = 0;
 				grid2[i][j] = 0;
 			}
 		}
 		this.ships = ships;
+		this.turn = 1;
 	}
 	
-	private boolean verifierAutour(int x, int y, int gridNum) {
+	private boolean checkAround(int x, int y, int gridNum) {
 		int [][] grid;
 		
 		if(gridNum == 1) {
@@ -64,7 +67,7 @@ public class Game {
 		return true;
 	}
 	
-	private boolean verifier(int shipLength, int x, int y, char o, int gridNum) {
+	private boolean check(int shipLength, int x, int y, char o, int gridNum) {
 		if((o != 'h') && (o != 'v')) {
 			return false;
 		}
@@ -82,7 +85,7 @@ public class Game {
 				return false;
 			if(grid[x][y] != 0)
 				return false;
-			if(!verifierAutour(x, y, gridNum))
+			if(!checkAround(x, y, gridNum))
 				return false;
 			if (o == 'h')
 				x += 1;
@@ -93,14 +96,14 @@ public class Game {
 		return true;
 	}
 	
-	public boolean remplir(int shipLength, int x, int y, char o, int gridNum) {
+	public boolean fill(int shipLength, int x, int y, char o, int gridNum) {
 		int [][] grid;
 		if(gridNum == 1) {
 			grid = this.grid1;
 		} else {
 			grid = this.grid2;
 		}
-		if(!verifier(shipLength, x, y, o, gridNum)) {
+		if(!check(shipLength, x, y, o, gridNum)) {
 			return false;
 		}
 		
@@ -115,6 +118,80 @@ public class Game {
 		}
 		
 		return true;
+	}
+
+	public boolean checkTarget(int x, int y, int gridNum) {
+		int [][] grid;
+		if(gridNum == 1) {
+			grid = this.grid1;
+		} else {
+			grid = this.grid2;
+		}
+		
+		if ((grid[x][y] != 0) && (grid[x][y] != 1)) {
+			return false;
+		}
+		return true;
+	}
+
+	public void attack(int x, int y, int gridNum) {
+		int [][] grid;
+		if(gridNum == 1) {
+			grid = this.grid1;
+		} else {
+			grid = this.grid2;
+		}
+		
+		if (grid[x][y] == 0) {
+			grid[x][y] = 3;
+		}
+		
+		if (grid[x][y] == 1) {
+			grid[x][y] = 2;
+		}
+		
+		//a completer (blow)
+	}
+
+	public int checkWin() {
+		int [][] grid = this.grid1;
+		
+		boolean p1Win = true;
+		boolean p2Win = true;
+		
+		for (int j = 0; j < length; j++) {
+			for (int i = 0; i < width; i++) {
+				if (grid[i][j] == 1) {
+					p2Win = false;
+					break;
+				}
+			}
+			if (!p2Win) {
+				break;
+			}
+		}
+		
+		grid = this.grid2;
+		
+		for (int j = 0; j < length; j++) {
+			for (int i = 0; i < width; i++) {
+				if (grid[i][j] == 1) {
+					p1Win = false;
+					break;
+				}
+			}
+			if (!p1Win) {
+				break;
+			}
+		}
+		
+		if (p1Win) {
+			return 1;
+		}
+		if (p2Win) {
+			return 2;
+		}
+		return 0;
 	}
 	
 	public int getWidth() {
@@ -156,7 +233,16 @@ public class Game {
 	public void setShips(ArrayList<Integer> ships) {
 		this.ships = ships;
 	}
+
 	
+	public int getTurn() {
+		return turn;
+	}
+
 	
+	public void setTurn(int turn) {
+		this.turn = turn;
+	}
+
 	
 }

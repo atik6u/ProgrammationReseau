@@ -24,18 +24,20 @@ public class MainServer {
 		} catch(Exception e) {
 			System.out.println("Erreur de démarrage du serveur");
 		}
-
 	}
 	
 	private static Game CreateGame() {
 		// Ici vous pouvez modifier les paramètres de la partie
 		
-		int width = 10, length = 10;
+		int width = 4, length = 4;
 		ArrayList<Integer> ships = new ArrayList<Integer>();
 		ships.add(2);
 		ships.add(2);
-		ships.add(3);
-		ships.add(4);
+		ships.add(2);
+//		ships.add(3);
+//		ships.add(4);
+//		ships.add(4);
+//		ships.add(5);
 
 		Game game = new Game(width, length, ships);
 		
