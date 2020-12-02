@@ -14,13 +14,14 @@ public interface ChatServer extends Remote{
 	
 	public void sendMsg(String msg, int id) throws RemoteException;
 	
-	public Vector<String> receiveMsg(int id) throws RemoteException;
+	public Vector<String> receiveMsg(int lastMessage) throws RemoteException;
 	
 	public Vector<String> receiveMsg(int lastMessage, CBClientIntf CB) throws RemoteException;
 	
 	public Vector<String> getMessages() throws RemoteException;
 	
-	public void addCB(CBClientIntf CB);
+	public void addCB(CBClientIntf CB) throws RemoteException;
 	
-	public void removeCB(CBClientIntf CB);
+	public void removeCB(CBClientIntf CB) throws RemoteException;
+	
 }

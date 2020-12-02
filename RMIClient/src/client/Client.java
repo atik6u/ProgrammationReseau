@@ -15,7 +15,7 @@ public class Client {
 	private boolean stopped;
 
 	public Client() throws MalformedURLException, RemoteException, NotBoundException {
-//		server = (ChatServer)Naming.lookup("//localhost/RmiServer");
+		server = (ChatServer)Naming.lookup("//localhost/RmiServer");
 		lastRead = 0;
 		stopped = false;
 	}
@@ -23,8 +23,8 @@ public class Client {
 	public static void main(String args[]) throws Exception {
         Client chatClient = new Client();
         
-        CBClientIntf CB = new CBClient();
-        chatClient.server.addCB(CB);
+//        CBClientIntf CB = new CBClient();
+//        chatClient.server.addCB(CB);
         
         Scanner sc = new Scanner(System.in);
         System.out.println("Choisissez votre nom: ");
@@ -40,25 +40,22 @@ public class Client {
         System.out.println(arrStr[0]); //affiche Bienvenue
         
         // Decommentez la ligne suivante pour tester le programme sans CallBack (Polling)
-//        new ListeningThread(chatClient).start();
+        new ListeningThread(chatClient).start();
         
      
         
         
 		String line = sc.nextLine();
 		while (!line.equals("quit")) {
-			synchronized (CB) {
 				chatClient.server.sendMsg(name + " : " + line, 0);
-				// Decommentez la ligne suivante pour tester le programme sans Polling (Callback)
-				CB.notifyMe(line);
-			
+//				// Decommentez la ligne suivante pour tester le programme sans Polling (Callback)
+//				CB.notifyMe(line);		
 				line = sc.nextLine();
-			}
 			
 			
 		}
 		chatClient.server.messageBye(name);
-		chatClient.server.removeCB(CB);
+//		chatClient.server.removeCB(CB);
 		chatClient.stop();
 		sc.close();
     }

@@ -17,16 +17,8 @@ public class Server extends UnicastRemoteObject implements ChatServer {
 	public Server() throws RemoteException{
 		super(0);
 		messages = new Vector<String>();
-		CBs = new Vector<CBClientIntf>();
+//		CBs = new Vector<CBClientIntf>();
 		clients = 0;
-	}
-	
-	public synchronized void addCB(CBClientIntf CB) {
-		CBs.add(CB);
-	}
-	
-	public synchronized void removeCB(CBClientIntf CB) {
-		CBs.remove(CB);
 	}
 	
 	public Vector<String> getMessages() throws RemoteException{
@@ -74,16 +66,27 @@ public class Server extends UnicastRemoteObject implements ChatServer {
 	}
 	
 	@Override
-	public synchronized Vector<String> receiveMsg(int lastMessage, CBClientIntf CB) throws RemoteException { // cettee methode est appelé dans l'approche callback
+	public synchronized Vector<String> receiveMsg(int lastMessage, CBClientIntf CB) throws RemoteException { // cette methode est appelé dans l'approche callback
 		Vector<String> res = new Vector<String>(messages.subList(lastMessage, messages.size()));
-		int index = CBs.indexOf(CB);
-		synchronized (CB) {
-			
-		}
+//		int index = CBs.indexOf(CB);
+//		synchronized (CB) {
+//			
+//		}
 //		CBs.get(index)
 		return res;
 	}
 	
+	
+	@Override
+	public void addCB(CBClientIntf CB) throws RemoteException {
+		CBs.add(CB);
+	}
+
+	@Override
+	public void removeCB(CBClientIntf CB) throws RemoteException {
+		CBs.remove(CB);
+	}
+
 	 public static void main(String args[]) throws Exception {
 	        try { 
 	            LocateRegistry.createRegistry(1099);
@@ -93,5 +96,9 @@ public class Server extends UnicastRemoteObject implements ChatServer {
 	        Naming.rebind("//localhost/RmiServer", chatServeur);
 	        System.out.println("Serveur prét!");
         }
+
+
+
+
 
 }
