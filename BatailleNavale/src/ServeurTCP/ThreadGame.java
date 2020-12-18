@@ -127,8 +127,9 @@ public class ThreadGame extends Thread {
 			grid = this.game.getGrid2();
 		} else {
 			grid = this.game.getGrid1();
+			
 		}
-		
+
 		out.print("     ");
 		for (int i = 0; i < this.game.getWidth(); i++) {
 			out.print((char)('a' + i) + " ");
@@ -159,25 +160,22 @@ public class ThreadGame extends Thread {
 			}
 			out.print("\n");
 		}
+		out.println("\n");
 	}
 	
 	public void combat() {
 		out.println("Le combat a commencé");
-		
 		showMyGrid();
 		showOtherGrid();
-		
 		int win = 0;
 		String target;
 		int x;
 		int y;
 		String[] strCoord;
 		int otherPlayer = (playerNum%2) + 1;
-		
-		 while (win == 0) {
+
+		while (win == 0) {
 			if (game.getTurn() == playerNum) {
-				showMyGrid();
-				showOtherGrid();
 				out.println("À votre tour (colonne,ligne):");
 				try {
 					target = in.readLine();
@@ -226,8 +224,11 @@ public class ThreadGame extends Thread {
 					e.printStackTrace();
 				}
 			}
+			else {
+				break;
+			}
 		}
-		 
+		
 		if (win == playerNum) {
 			showMyGrid();
 			showOtherGrid();
@@ -306,6 +307,13 @@ public class ThreadGame extends Thread {
 			enterPositions();
 			out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 			combat();
+			
+			// Chat entre les deux clients
+//			while (true) {
+//				String message = in.readLine();
+//				message = "joueur" + this.playerNum + ": " + message;
+//				System.out.println(message);
+//			}
 			
 		} catch (Exception e) {
 			System.out.println("Problème ThreadGameP" + playerNum + " run()");

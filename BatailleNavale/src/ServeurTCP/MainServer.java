@@ -16,7 +16,7 @@ public class MainServer {
 				Socket player2 = ecoute.accept();
 				System.out.println("Joueur 2 connecté!");
 				
-				Game game = CreateGame();
+				Game game = createGame();
 				
 				new ThreadGameP1(player1, game).start();
 				new ThreadGameP2(player2, game).start();
@@ -26,7 +26,7 @@ public class MainServer {
 		}
 	}
 	
-	private static Game CreateGame() {
+	private static Game createGame() {
 		// Ici vous pouvez modifier les paramètres de la partie
 		
 		int width = 4, length = 4;
