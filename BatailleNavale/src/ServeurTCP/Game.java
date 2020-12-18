@@ -9,6 +9,7 @@ public class Game {
 	private int [][] grid2;
 	private ArrayList<Integer> ships = new ArrayList<Integer>();
 	private int turn;
+	private int readyPlayers;
 	
 	public Game(int width, int length, ArrayList<Integer> ships) {
 		super();
@@ -24,6 +25,7 @@ public class Game {
 		}
 		this.ships = ships;
 		this.turn = 1;
+		this.readyPlayers = 0;
 	}
 	
 	private boolean checkAround(int x, int y, int gridNum) {
@@ -134,7 +136,7 @@ public class Game {
 		return true;
 	}
 
-	public void attack(int x, int y, int gridNum) {
+	public boolean attack(int x, int y, int gridNum) {
 		int [][] grid;
 		if(gridNum == 1) {
 			grid = this.grid1;
@@ -144,13 +146,15 @@ public class Game {
 		
 		if (grid[x][y] == 0) {
 			grid[x][y] = 3;
+			return false;
 		}
 		
 		if (grid[x][y] == 1) {
 			grid[x][y] = 2;
+			return true;
 		}
 		
-		//a completer (blow)
+		return true;
 	}
 
 	public int checkWin() {
@@ -192,6 +196,10 @@ public class Game {
 			return 2;
 		}
 		return 0;
+	}
+	
+	public void ready() {
+		this.readyPlayers++;
 	}
 	
 	public int getWidth() {
@@ -242,6 +250,14 @@ public class Game {
 	
 	public void setTurn(int turn) {
 		this.turn = turn;
+	}
+
+	public int getReadyPlayers() {
+		return readyPlayers;
+	}
+
+	public void setReadyPlayers(int readyPlayers) {
+		this.readyPlayers = readyPlayers;
 	}
 
 	

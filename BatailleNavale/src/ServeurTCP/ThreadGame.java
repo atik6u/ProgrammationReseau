@@ -25,7 +25,6 @@ public class ThreadGame extends Thread {
 	}
 	
 	private void enterPositions() {
-//		try {
 		String choice;
 		int x;
 		int y;
@@ -62,13 +61,20 @@ public class ThreadGame extends Thread {
 				i++;
 			} catch (Exception e) {
 				this.out.println("Voulez-vous réentrer la position au format suivant: x,y,o (ex: a,1,v)");
+				this.out.println("Vérifiez que la distance entre deux navires est d'au moins un carré.");
 			}
 		}
+		game.ready();
 		out.println("En attendant l'adversaire.");
-//		} catch (Exception e) {
-//			System.out.println("Problème enterPosition");
-//		}
 		
+		while(game.getReadyPlayers() != 2) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				System.out.println("Error SLEEP enterPosition");
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void showMyGrid() {
@@ -94,11 +100,20 @@ public class ThreadGame extends Thread {
 			else
 				out.print((j+1) + " __|");
 			for (int i = 0; i < this.game.getWidth(); i++) {
-				if(grid[i][j] == 1) {
+				if(grid[i][j] == 0) {
+					out.print("  ");
+				}
+				else if(grid[i][j] == 1) {
 					out.print("O ");
 				}
-				else if(grid[i][j] == 0) {
-					out.print("  ");
+				else if(grid[i][j] == 2) {
+					out.print("X ");
+				}
+				else if(grid[i][j] == 3) {
+					out.print("M ");
+				}
+				else {
+					out.print("F ");
 				}
 			}
 			out.print("\n");
@@ -148,16 +163,22 @@ public class ThreadGame extends Thread {
 	
 	public void combat() {
 		out.println("Le combat a commencé");
+		
+		showMyGrid();
+		showOtherGrid();
+		
 		int win = 0;
 		String target;
 		int x;
 		int y;
 		String[] strCoord;
-		int otherPlayer;
+		int otherPlayer = (playerNum%2) + 1;
 		
 		 while (win == 0) {
 			if (game.getTurn() == playerNum) {
-				out.println("À votre tour:");
+				showMyGrid();
+				showOtherGrid();
+				out.println("À votre tour (colonne,ligne):");
 				try {
 					target = in.readLine();
 				} catch (Exception e) {
@@ -173,29 +194,51 @@ public class ThreadGame extends Thread {
 				strCoord = target.split(",");
 				x = strCoord[0].charAt(0);
 				y = Integer.parseInt(strCoord[1]);
-				otherPlayer = (playerNum%2) + 1;
 				
 				if (game.checkTarget((int)(x - 'a'), y - 1, otherPlayer)) {
-					game.attack((int)(x - 'a'), y - 1, otherPlayer);
+					boolean hit = game.attack((int)(x - 'a'), y - 1, otherPlayer);
+					showMyGrid();
+					showOtherGrid();
+					if(hit) {
+						this.out.println("Touché!");
+					} else {
+						this.out.println("Raté!");
+					}
+					
 					win = game.checkWin();
+					
 					if(win == 0) {
+						this.out.println("En attendant l'adversaire.");
 						game.setTurn(otherPlayer);
-						out.println("En attendant l'adversaire.");
+					} else {
+						game.setTurn(0);
 					}
 				}
 				else {
-					out.println("Cible déjà touché. Voulez-vous réessayer...");
+					this.out.println("Cible déjà touché. Voulez-vous réessayer...");
 				}
 			}
-			
-			if (win == playerNum) {
-				out.print("GAME OVER\n Vous avez perdu :(");
+			else if(game.getTurn() == otherPlayer){
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					this.out.println("Error SLEEP combat");
+					e.printStackTrace();
+				}
 			}
-			else {
-				out.print("GAME OVER\n Vous avez gagné :)");
-			}
-				
 		}
+		 
+		if (win == playerNum) {
+			showMyGrid();
+			showOtherGrid();
+			out.println("GAME OVER\n Vous avez gagné :)");
+		}
+		else {
+			showMyGrid();
+			showOtherGrid();
+			out.println("GAME OVER\n Vous avez perdu :(");
+		}
+			
 	}	
 	
 	private boolean checkPositionFormat(String position) {
@@ -238,7 +281,7 @@ public class ThreadGame extends Thread {
 			if ( ((int)x < 'a') || ((int)x >= ('a' + game.getWidth()))) {
 				return false;
 			}
-			if ((y < 0) || (y >= game.getLength())) {
+			if ((y < 1) || (y > game.getLength())) {
 				return false;
 			}
 		} catch (Exception e) {
@@ -261,18 +304,12 @@ public class ThreadGame extends Thread {
 			
 			// Selection de la position des navires
 			enterPositions();
-			
-			out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");  
-			
+			out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 			combat();
 			
-			while (true) {
-				String message = in.readLine();
-				message = "joueur" + this.playerNum + ": " + message;
-				System.out.println(message);
-			}
 		} catch (Exception e) {
-			System.out.println("Problème ThreadChat run()");
+			System.out.println("Problème ThreadGameP" + playerNum + " run()");
+			e.printStackTrace();
 		}
 	}
 }
